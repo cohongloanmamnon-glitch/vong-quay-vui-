@@ -312,13 +312,20 @@ html, body {
 </div>
 
 <script>
+// TÍCH HỢP CÁC FILE ÂM THANH GHI ÂM
 const sndSpin = new Audio('quay.mp3'); sndSpin.loop = true;
 const sndCorrect = new Audio('true.m4a'); 
 const sndWrong = new Audio('sai.m4a');    
 
+// File âm thanh câu hỏi
+const sndQ_General = new Audio('cau hoi 1.m4a'); // Hỏi chung "dờ hay đờ"
+const sndQ_D = new Audio('cau hoi d.m4a');       // Hỏi chữ "dờ"
+const sndQ_Đ = new Audio('cau hoi d 1.m4a');     // Hỏi chữ "đờ"
+
 const QUESTIONS = {
     1: {
         text: "Câu 1: Bé hãy tìm từ có chứa chữ 'đ' nhé!",
+        audio: sndQ_Đ,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
             { word: 'chiếc lá', emoji: '🍃', isCorrect: false },
@@ -327,6 +334,7 @@ const QUESTIONS = {
     },
     2: {
         text: "Câu 2: Đâu là từ có chữ 'đ' nhỉ?",
+        audio: sndQ_Đ,
         options: [
             { word: 'đồng hồ', img: 'dong ho.png', emoji: '⏰', isCorrect: true },
             { word: 'quả táo', emoji: '🍎', isCorrect: false },
@@ -335,6 +343,7 @@ const QUESTIONS = {
     },
     3: {
         text: "Câu 3: Thẻ từ nào dưới đây có chữ 'đ'?",
+        audio: sndQ_Đ,
         options: [
             { word: 'chiếc lá', emoji: '🍃', isCorrect: false },
             { word: 'điện thoại', img: 'điện thoại.png', emoji: '☎️', isCorrect: true },
@@ -343,6 +352,7 @@ const QUESTIONS = {
     },
     4: {
         text: "Câu 4: Bé tinh mắt tìm giúp chữ 'đ' ở thẻ từ nào?",
+        audio: sndQ_Đ,
         options: [
             { word: 'quả táo', emoji: '🍎', isCorrect: false },
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
@@ -351,6 +361,7 @@ const QUESTIONS = {
     },
     5: {
         text: "Câu 5: Từ nào sau đây có chứa chữ 'đ'?",
+        audio: sndQ_Đ,
         options: [
             { word: 'đu quay', img: 'đu quay.png', emoji: '🎡', isCorrect: true },
             { word: 'mặt trời', emoji: '☀️', isCorrect: false },
@@ -359,6 +370,7 @@ const QUESTIONS = {
     },
     6: {
         text: "Câu 6: Bé hãy tìm từ có chứa chữ 'd' nhé!",
+        audio: sndQ_D,
         options: [
             { word: 'con dế', img: 'de.png', emoji: '🦗', isCorrect: true }, 
             { word: 'quả táo', emoji: '🍎', isCorrect: false },
@@ -367,6 +379,7 @@ const QUESTIONS = {
     },
     7: {
         text: "Câu 7: Đâu là thẻ từ có chứa chữ 'd'?",
+        audio: sndQ_D,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
             { word: 'con cá', emoji: '🐟', isCorrect: false },
@@ -375,6 +388,7 @@ const QUESTIONS = {
     },
     8: {
         text: "Câu 8: Từ nào dưới đây có chữ 'd' nhỉ?",
+        audio: sndQ_D,
         options: [
             { word: 'mặt trời', emoji: '☀️', isCorrect: false },
             { word: 'con diều', img: 'dieu.png', emoji: '🪁', isCorrect: true },
@@ -383,6 +397,7 @@ const QUESTIONS = {
     },
     9: {
         text: "Câu 9: Bé hãy chỉ ra từ có chữ 'd' nhé!",
+        audio: sndQ_D,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
             { word: 'dưa hấu', img: 'dưa.png', emoji: '🍉', isCorrect: true },
@@ -391,6 +406,7 @@ const QUESTIONS = {
     },
     10: {
         text: "Câu 10: Thẻ từ nào sau đây có chữ 'd'?",
+        audio: sndQ_D,
         options: [
             { word: 'con cá', emoji: '🐟', isCorrect: false },
             { word: 'mặt trời', emoji: '☀️', isCorrect: false },
@@ -417,42 +433,30 @@ let isSpinning = false;
 let playedSlices = []; 
 let soundEnabled = true;
 
-let aiVoice = null;
-function initVoice() {
-    const voices = window.speechSynthesis.getVoices();
-    const viVoices = voices.filter(v => v.lang.includes('vi'));
-    aiVoice = viVoices.find(v => v.name.includes('Google') || v.name.includes('Female')) || viVoices[0];
-}
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = initVoice;
-}
-
-function speak(text) {
-    if (!soundEnabled || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'vi-VN';
-    u.rate = 0.85; 
-    u.pitch = 1.15; 
-    if (aiVoice) u.voice = aiVoice;
-    window.speechSynthesis.speak(u);
-}
-
-function playAudio(audioObj, fallbackText) {
+// Hàm phát audio thuần túy, loại bỏ hoàn toàn TTS
+function playAudio(audioObj) {
     if (!soundEnabled) return;
+    
+    // Ngắt các âm thanh câu hỏi đang phát trước khi phát âm thanh mới
+    sndQ_General.pause();
+    sndQ_D.pause();
+    sndQ_Đ.pause();
+    
     audioObj.currentTime = 0;
     audioObj.play().catch(e => {
-        console.log("Không tải được Audio, chuyển sang giọng AI dự phòng.");
-        if (fallbackText) speak(fallbackText);
+        console.log("Không tìm thấy file âm thanh.");
     });
 }
 
+// Cấp quyền âm thanh trên thiết bị di động
 document.body.addEventListener('click', () => {
     if(soundEnabled && playedSlices.length === 0 && score === 0 && !isSpinning){
         sndCorrect.play().then(()=>sndCorrect.pause()).catch(e=>{});
         sndWrong.play().then(()=>sndWrong.pause()).catch(e=>{});
         sndSpin.play().then(()=>sndSpin.pause()).catch(e=>{});
-        initVoice();
+        sndQ_General.play().then(()=>sndQ_General.pause()).catch(e=>{});
+        sndQ_D.play().then(()=>sndQ_D.pause()).catch(e=>{});
+        sndQ_Đ.play().then(()=>sndQ_Đ.pause()).catch(e=>{});
     }
 }, {once: true});
 
@@ -470,7 +474,6 @@ spinBtn.addEventListener('click', () => {
     if (unplayed.length === 0) return;
     
     if(soundEnabled) {
-        if('speechSynthesis' in window) window.speechSynthesis.resume();
         sndSpin.currentTime = 0;
         sndSpin.play().catch(e=>{});
     }
@@ -488,13 +491,10 @@ spinBtn.addEventListener('click', () => {
     let chosenId = unplayed[Math.floor(Math.random() * unplayed.length)];
     playedSlices.push(chosenId);
 
-    // Mảng cấu hình vị trí trực quan của các số trên ảnh vòng quay 10.png
     const VISUAL_ORDER = [4, 5, 6, 7, 8, 9, 10, 1, 2, 3];
     const visualIndex = VISUAL_ORDER.indexOf(chosenId);
     
     const angleStep = 360 / WHEEL_SLICES;
-    
-    // TÍNH TOÁN GÓC QUAY CHUẨN XÁC VÀO TÂM Ô
     const sliceCenterAngle = (visualIndex * angleStep) + (angleStep / 2);
     const targetAngleMod = (360 - sliceCenterAngle) % 360;
     
@@ -518,10 +518,8 @@ function loadQuestion(id) {
     let q = QUESTIONS[id];
     instructionEl.innerHTML = q.text;
     
-    // XỬ LÝ LẠI VĂN BẢN ĐỂ AI ĐỌC CHUẨN ÂM VỊ MẦM NON
-    let speakText = q.text.replace(/Câu \d+:/, '').trim(); 
-    speakText = speakText.replace(/'d'/g, 'dờ').replace(/'đ'/g, 'đờ');
-    speak(speakText);
+    // Gọi hàm phát file âm thanh câu hỏi tương ứng
+    playAudio(q.audio);
 
     let options = [...q.options];
     options.sort(() => 0.5 - Math.random());
@@ -551,7 +549,7 @@ function handleAnswer(cardEl, optData) {
         instructionEl.innerHTML = `ĐÚNG RỒI! GIỎI QUÁ CÔ KHEN CON!`;
         instructionEl.style.color = 'var(--green)';
         
-        playAudio(sndCorrect, 'Giỏi quá, cô khen con!');
+        playAudio(sndCorrect);
         fireConfetti();
         
         let rectCard = cardEl.getBoundingClientRect();
@@ -572,7 +570,7 @@ function handleAnswer(cardEl, optData) {
         cardEl.classList.add('wrong');
         instructionEl.innerHTML = `Ồ SAI RỒI! CON KHÔNG ĐƯỢC ĐIỂM Ở CÂU NÀY.`;
         instructionEl.style.color = 'var(--red)';
-        playAudio(sndWrong, 'Ồ sai rồi, không sao, con quay tiếp nhé!');
+        playAudio(sndWrong);
         showNextBtn();
     }
 }
@@ -606,7 +604,9 @@ const msgSub = document.getElementById('msgSub');
 const restartBtn = document.getElementById('restartBtn');
 
 function showFinalScreen() {
-    speak(`Trò chơi kết thúc! Con trả lời đúng ${score} câu. Hoan hô!`);
+    // Phát âm thanh chúc mừng chung khi kết thúc game (sử dụng file cau hoi 1.m4a làm tạm, cô có thể đổi file khác sau)
+    playAudio(sndQ_General); 
+    
     msgSub.textContent = `Con trả lời đúng ${score}/10 câu!`;
     overlayMsg.style.display = 'flex';
     restartBtn.style.display = 'block';
@@ -639,7 +639,9 @@ document.getElementById('soundBtn').addEventListener('click', (e) => {
     e.target.textContent = soundEnabled ? '🔊 Âm thanh: ĐANG BẬT' : '🔇 Âm thanh: ĐÃ TẮT';
     if(!soundEnabled) {
         sndSpin.pause();
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        sndQ_General.pause();
+        sndQ_D.pause();
+        sndQ_Đ.pause();
     }
 });
 
