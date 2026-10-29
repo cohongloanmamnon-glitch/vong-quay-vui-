@@ -312,19 +312,20 @@ html, body {
 </div>
 
 <script>
-// TÍCH HỢP CÁC FILE ÂM THANH GHI ÂM
+// --- TÍCH HỢP TÀI NGUYÊN ÂM THANH MỚI (XÓA BỎ HOÀN TOÀN TTS AI) ---
 const sndSpin = new Audio('quay.mp3'); sndSpin.loop = true;
-const sndCorrect = new Audio('true.m4a'); 
+const sndCorrect = new Audio('đúng.m4a'); 
 const sndWrong = new Audio('sai.m4a');    
 
-// File âm thanh câu hỏi
-const sndQ_General = new Audio('cau hoi 1.m4a'); // Hỏi chung "dờ hay đờ"
-const sndQ_D = new Audio('cau hoi d.m4a');       // Hỏi chữ "dờ"
-const sndQ_Đ = new Audio('cau hoi d 1.m4a');     // Hỏi chữ "đờ"
+// Các file âm thanh câu hỏi do cô ghi âm
+const sndQ_General = new Audio('d-đ.mp3');   // Dành cho màn hình chờ / bắt đầu (nếu cần)
+const sndQ_D = new Audio('the d.m4a');       
+const sndQ_Đ = new Audio('the đ.m4a');       
+const sndFinish = new Audio('hoan thanh.m4a'); // Âm thanh chúc mừng kết thúc
 
 const QUESTIONS = {
     1: {
-        text: "Câu 1: Bé hãy tìm từ có chứa chữ 'đ' nhé!",
+        text: "Câu 1: Bé tìm thẻ từ có chứa chữ 'đ' nhé!",
         audio: sndQ_Đ,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
@@ -333,7 +334,7 @@ const QUESTIONS = {
         ]
     },
     2: {
-        text: "Câu 2: Đâu là từ có chữ 'đ' nhỉ?",
+        text: "Câu 2: Bé tìm thẻ từ có chứa chữ 'đ' nhé!",
         audio: sndQ_Đ,
         options: [
             { word: 'đồng hồ', img: 'dong ho.png', emoji: '⏰', isCorrect: true },
@@ -342,7 +343,7 @@ const QUESTIONS = {
         ]
     },
     3: {
-        text: "Câu 3: Thẻ từ nào dưới đây có chữ 'đ'?",
+        text: "Câu 3: Bé tìm thẻ từ có chứa chữ 'đ' nhé!",
         audio: sndQ_Đ,
         options: [
             { word: 'chiếc lá', emoji: '🍃', isCorrect: false },
@@ -351,7 +352,7 @@ const QUESTIONS = {
         ]
     },
     4: {
-        text: "Câu 4: Bé tinh mắt tìm giúp chữ 'đ' ở thẻ từ nào?",
+        text: "Câu 4: Bé tìm thẻ từ có chứa chữ 'đ' nhé!",
         audio: sndQ_Đ,
         options: [
             { word: 'quả táo', emoji: '🍎', isCorrect: false },
@@ -360,7 +361,7 @@ const QUESTIONS = {
         ]
     },
     5: {
-        text: "Câu 5: Từ nào sau đây có chứa chữ 'đ'?",
+        text: "Câu 5: Bé tìm thẻ từ có chứa chữ 'đ' nhé!?",
         audio: sndQ_Đ,
         options: [
             { word: 'đu quay', img: 'đu quay.png', emoji: '🎡', isCorrect: true },
@@ -369,7 +370,7 @@ const QUESTIONS = {
         ]
     },
     6: {
-        text: "Câu 6: Bé hãy tìm từ có chứa chữ 'd' nhé!",
+        text: "Câu 6: Bé tìm thẻ từ có chứa chữ 'd' nhé!",
         audio: sndQ_D,
         options: [
             { word: 'con dế', img: 'de.png', emoji: '🦗', isCorrect: true }, 
@@ -378,7 +379,7 @@ const QUESTIONS = {
         ]
     },
     7: {
-        text: "Câu 7: Đâu là thẻ từ có chứa chữ 'd'?",
+        text: "Câu 7: Bé tìm thẻ từ có chứa chữ 'd' nhé!",
         audio: sndQ_D,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
@@ -387,7 +388,7 @@ const QUESTIONS = {
         ]
     },
     8: {
-        text: "Câu 8: Từ nào dưới đây có chữ 'd' nhỉ?",
+        text: "Câu 8: Bé tìm thẻ từ có chứa chữ 'd' nhé!",
         audio: sndQ_D,
         options: [
             { word: 'mặt trời', emoji: '☀️', isCorrect: false },
@@ -396,16 +397,16 @@ const QUESTIONS = {
         ]
     },
     9: {
-        text: "Câu 9: Bé hãy chỉ ra từ có chữ 'd' nhé!",
+        text: "Câu 9: Bé tìm thẻ từ có chứa chữ 'd' nhé!",
         audio: sndQ_D,
         options: [
             { word: 'bông hoa', emoji: '🌸', isCorrect: false },
-            { word: 'dưa hấu', img: 'dưa.png', emoji: '🍉', isCorrect: true },
+            { word: 'dưa hấu', img: 'dua.png', emoji: '🍉', isCorrect: true },
             { word: 'quả táo', emoji: '🍎', isCorrect: false }
         ]
     },
     10: {
-        text: "Câu 10: Thẻ từ nào sau đây có chữ 'd'?",
+        text: "Câu 10: Bé tìm thẻ từ có chứa chữ 'd' nhé!",
         audio: sndQ_D,
         options: [
             { word: 'con cá', emoji: '🐟', isCorrect: false },
@@ -433,14 +434,16 @@ let isSpinning = false;
 let playedSlices = []; 
 let soundEnabled = true;
 
-// Hàm phát audio thuần túy, loại bỏ hoàn toàn TTS
+// Hàm phát audio thuần túy, tự động ngắt các file cũ trước khi phát file mới
 function playAudio(audioObj) {
     if (!soundEnabled) return;
     
-    // Ngắt các âm thanh câu hỏi đang phát trước khi phát âm thanh mới
     sndQ_General.pause();
     sndQ_D.pause();
     sndQ_Đ.pause();
+    sndCorrect.pause();
+    sndWrong.pause();
+    sndFinish.pause();
     
     audioObj.currentTime = 0;
     audioObj.play().catch(e => {
@@ -448,7 +451,7 @@ function playAudio(audioObj) {
     });
 }
 
-// Cấp quyền âm thanh trên thiết bị di động
+// Cấp quyền âm thanh trên thiết bị di động bằng click đầu tiên
 document.body.addEventListener('click', () => {
     if(soundEnabled && playedSlices.length === 0 && score === 0 && !isSpinning){
         sndCorrect.play().then(()=>sndCorrect.pause()).catch(e=>{});
@@ -457,6 +460,7 @@ document.body.addEventListener('click', () => {
         sndQ_General.play().then(()=>sndQ_General.pause()).catch(e=>{});
         sndQ_D.play().then(()=>sndQ_D.pause()).catch(e=>{});
         sndQ_Đ.play().then(()=>sndQ_Đ.pause()).catch(e=>{});
+        sndFinish.play().then(()=>sndFinish.pause()).catch(e=>{});
     }
 }, {once: true});
 
@@ -518,7 +522,7 @@ function loadQuestion(id) {
     let q = QUESTIONS[id];
     instructionEl.innerHTML = q.text;
     
-    // Gọi hàm phát file âm thanh câu hỏi tương ứng
+    // Gọi hàm phát file âm thanh câu hỏi do cô ghi âm
     playAudio(q.audio);
 
     let options = [...q.options];
@@ -604,8 +608,8 @@ const msgSub = document.getElementById('msgSub');
 const restartBtn = document.getElementById('restartBtn');
 
 function showFinalScreen() {
-    // Phát âm thanh chúc mừng chung khi kết thúc game (sử dụng file cau hoi 1.m4a làm tạm, cô có thể đổi file khác sau)
-    playAudio(sndQ_General); 
+    // Phát âm thanh file chúc mừng
+    playAudio(sndFinish); 
     
     msgSub.textContent = `Con trả lời đúng ${score}/10 câu!`;
     overlayMsg.style.display = 'flex';
@@ -642,6 +646,9 @@ document.getElementById('soundBtn').addEventListener('click', (e) => {
         sndQ_General.pause();
         sndQ_D.pause();
         sndQ_Đ.pause();
+        sndCorrect.pause();
+        sndWrong.pause();
+        sndFinish.pause();
     }
 });
 
