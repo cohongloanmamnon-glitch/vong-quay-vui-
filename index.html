@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Vòng Quay Vui Nhộn - Trắc Nghiệm Chữ d, đ</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box !important;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif !important;
+}
+
+:root {
+    --bg-clay: #f0f4f8;
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --yellow: #ffcf59;
+    --text-dark: #2d3436;
+    --shadow-light: #ffffff;
+    --shadow-dark: #d1d9e6;
+    --pastel-bg: rgba(255, 255, 255, 0.7);
+}
+
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    background: url('nen.png') no-repeat center center fixed !important;
+    background-size: cover !important;
+    background-color: #e0e5ec !important; 
+    overflow-x: hidden !important;
+    color: var(--text-dark) !important;
+    touch-action: manipulation !important;
+}
+
+.game-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    padding: 15px !important;
+    gap: 20px !important;
+}
+
+@media (min-width: 900px) {
+    .game-container { flex-direction: row !important; align-items: stretch !important; padding: 30px !important;}
+}
+
+.left-panel {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-bottom: 20px !important;
+}
+
+.header {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 25px !important;
+    background: var(--pastel-bg) !important;
+    padding: 15px 25px !important;
+    border-radius: 30px !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+.title { font-size: clamp(24px, 3.5vw, 36px) !important; font-weight: 900 !important; color: var(--primary) !important; margin: 0 !important; text-shadow: 2px 2px 0 #fff !important;}
+.score-board {
+    font-size: clamp(18px, 3vw, 24px) !important;
+    font-weight: 900 !important;
+    background: var(--yellow) !important;
+    padding: 10px 25px !important;
+    border-radius: 30px !important;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.15) !important;
+    border: 4px solid #fff !important;
+    color: var(--brown) !important;
+}
+
+.wheel-wrapper {
+    position: relative !important;
+    width: min(80vw, 480px) !important;
+    height: min(80vw, 480px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.wheel-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    border: 12px solid #fff !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 0 15px rgba(0,0,0,0.3) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background: #fff !important;
+}
+.wheel {
+    width: 100% !important;
+    height: 100% !important;
+    background: url('vòng quay 10.png') center/cover no-repeat !important; 
+    border-radius: 50% !important;
+    transform-origin: 50% 50% !important; 
+    transition: transform 4.5s cubic-bezier(0.15, 0.85, 0.15, 1) !important; 
+    will-change: transform !important;
+}
+.pointer {
+    position: absolute !important;
+    top: -25px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-left: 25px solid transparent !important;
+    border-right: 25px solid transparent !important;
+    border-top: 60px solid var(--primary) !important; 
+    z-index: 10 !important;
+    filter: drop-shadow(0 6px 6px rgba(0,0,0,0.3)) !important;
+}
+.spin-btn {
+    position: absolute !important;
+    width: clamp(80px, 15vw, 110px) !important;
+    height: clamp(80px, 15vw, 110px) !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #ff6b6b, #e84b5f) !important;
+    color: white !important;
+    font-weight: 900 !important;
+    font-size: clamp(20px, 4vw, 28px) !important;
+    border: 6px solid #fff !important;
+    cursor: pointer !important;
+    z-index: 15 !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.1s !important;
+}
+.spin-btn:active { transform: scale(0.9) !important; }
+.spin-btn:disabled { filter: grayscale(0.6) !important; cursor: not-allowed !important; }
+
+.right-panel {
+    flex: 1.2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--pastel-bg) !important;
+    border-radius: 40px !important;
+    padding: 25px !important;
+    box-shadow: 10px 10px 20px rgba(0,0,0,0.1), inset 3px 3px 6px rgba(255,255,255,0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    position: relative !important;
+    min-height: 50vh !important;
+}
+
+.instruction {
+    font-size: clamp(20px, 3.5vw, 32px) !important;
+    font-weight: 900 !important;
+    color: var(--text-dark) !important;
+    text-align: center !important;
+    margin-bottom: 25px !important;
+    padding: 15px 30px !important;
+    background: #fff !important;
+    border-radius: 30px !important;
+    border: 5px dashed var(--secondary) !important;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.05) !important;
+}
+
+.magnifier-zone {
+    width: clamp(120px, 25vw, 160px) !important;
+    height: clamp(120px, 25vw, 160px) !important;
+    border-radius: 35px !important;
+    background: #eef2f5 !important;
+    box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light) !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: clamp(50px, 8vw, 80px) !important;
+    margin-bottom: 35px !important;
+    border: 4px solid transparent !important;
+    transition: all 0.3s !important;
+}
+.magnifier-zone.success {
+    border-color: var(--green) !important;
+    background: #e4f8ea !important;
+    box-shadow: 0 10px 20px rgba(46, 164, 90, 0.2) !important;
+}
+
+.options-container {
+    display: flex !important;
+    gap: 20px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+.option-card {
+    background: #f0f4f8 !important;
+    border-radius: 25px !important;
+    padding: 15px !important;
+    width: clamp(120px, 30%, 180px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light), inset 2px 2px 5px rgba(255,255,255,0.8) !important;
+    border: 5px solid transparent !important;
+    transition: all 0.2s !important;
+}
+.option-card:active {
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light) !important;
+    transform: scale(0.95) !important;
+}
+.option-card img {
+    width: 80% !important;
+    aspect-ratio: 1 !important;
+    object-fit: contain !important;
+    margin-bottom: 12px !important;
+    filter: drop-shadow(0 6px 6px rgba(0,0,0,0.15)) !important;
+}
+.option-card span {
+    font-size: clamp(16px, 2.8vw, 24px) !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    color: var(--text-dark) !important;
+}
+
+.option-card.correct { border-color: var(--green) !important; animation: bouncePop 0.5s !important; }
+.option-card.wrong { border-color: var(--red) !important; animation: shake 0.4s !important; opacity: 0.6 !important; pointer-events: none !important;}
+
+.controls { display: flex !important; gap: 15px !important; margin-top: 25px !important; width: 100% !important; justify-content: center !important;}
+.action-btn {
+    padding: 15px 35px !important;
+    border-radius: 25px !important;
+    font-size: clamp(18px, 3vw, 24px) !important;
+    font-weight: 900 !important;
+    color: #fff !important;
+    border: 4px solid #fff !important;
+    cursor: pointer !important;
+    display: none !important;
+    transition: transform 0.1s !important;
+}
+.action-btn:active { transform: scale(0.95) !important;}
+.btn-next { background: linear-gradient(135deg, #4ecdc4, #2abbb0) !important; box-shadow: 0 8px 0 #1e998f !important; }
+.btn-restart { background: linear-gradient(135deg, #ffcf59, #f39c12) !important; box-shadow: 0 8px 0 #d68910 !important;}
+
+.overlay-msg {
+    position: absolute !important; inset: 0 !important; background: rgba(255,255,255,0.98) !important;
+    border-radius: 40px !important; display: none !important; flex-direction: column !important;
+    align-items: center !important; justify-content: center !important; z-index: 50 !important;
+}
+
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px) rotate(-5deg); } 75% { transform: translateX(10px) rotate(5deg); } }
+@keyframes bouncePop { 0% { transform: scale(0.8); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes flyToMagnifier {
+    to {
+        transform: translate(var(--fly-x), var(--fly-y)) scale(0.6);
+        opacity: 0;
+    }
+}
+.confetti { position: fixed !important; width: 15px !important; height: 15px !important; z-index: 1000 !important; animation: fall 3s linear forwards !important; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+.disabled-events { pointer-events: none !important; }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="left-panel">
+        <div class="header">
+            <h1 class="title">VÒNG QUAY VUI NHỘN 2</h1>
+            <div class="score-board">Điểm: <span id="score">0</span>/10</div>
+        </div>
+        <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <div class="wheel-container">
+                <div class="wheel" id="wheel"></div>
+            </div>
+            <button class="spin-btn" id="spinBtn">QUAY</button>
+        </div>
+        <div style="margin-top: 25px;">
+            <button class="top-btn" id="soundBtn">🔊 Âm thanh: ĐANG BẬT</button>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="instruction" id="instruction">Bé hãy bấm QUAY để nhận câu hỏi nhé!</div>
+        
+        <div class="magnifier-zone" id="magnifier">🔍</div>
+        
+        <div class="options-container" id="optionsContainer">
+        </div>
+
+        <div class="controls">
+            <button class="action-btn btn-next" id="nextBtn">Quay Tiếp</button>
+        </div>
+
+        <div class="overlay-msg" id="overlayMsg">
+            <h1 style="font-size: clamp(40px, 6vw, 60px); color: var(--primary); margin-bottom:10px;" id="msgTitle">Hoan Hô!</h1>
+            <div style="font-size: clamp(60px, 10vw, 80px); margin-bottom:20px;" id="msgIcon">🏆</div>
+            <h2 style="font-size: clamp(22px, 4vw, 30px); color: var(--text-dark);" id="msgSub">Bé hoàn thành xuất sắc!</h2>
+            <button class="action-btn btn-restart" id="restartBtn" style="margin-top:20px; display:none;">Chơi Lại Từ Đầu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const sndSpin = new Audio('quay.mp3'); sndSpin.loop = true;
+const sndCorrect = new Audio('true.m4a'); 
+const sndWrong = new Audio('sai.m4a');    
+
+const QUESTIONS = {
+    1: {
+        text: "Câu 1: Bé hãy tìm từ có chứa chữ 'đ' nhé!",
+        options: [
+            { word: 'bông hoa', emoji: '🌸', isCorrect: false },
+            { word: 'chiếc lá', emoji: '🍃', isCorrect: false },
+            { word: 'cây đa', img: 'cây đa.png', emoji: '🌳', isCorrect: true }
+        ]
+    },
+    2: {
+        text: "Câu 2: Đâu là từ có chữ 'đ' nhỉ?",
+        options: [
+            { word: 'đồng hồ', img: 'dong ho.png', emoji: '⏰', isCorrect: true },
+            { word: 'quả táo', emoji: '🍎', isCorrect: false },
+            { word: 'con cá', emoji: '🐟', isCorrect: false }
+        ]
+    },
+    3: {
+        text: "Câu 3: Thẻ từ nào dưới đây có chữ 'đ'?",
+        options: [
+            { word: 'chiếc lá', emoji: '🍃', isCorrect: false },
+            { word: 'điện thoại', img: 'điện thoại.png', emoji: '☎️', isCorrect: true },
+            { word: 'mặt trời', emoji: '☀️', isCorrect: false }
+        ]
+    },
+    4: {
+        text: "Câu 4: Bé tinh mắt tìm giúp chữ 'đ' ở thẻ từ nào?",
+        options: [
+            { word: 'quả táo', emoji: '🍎', isCorrect: false },
+            { word: 'bông hoa', emoji: '🌸', isCorrect: false },
+            { word: 'đèn lồng', img: 'den long.png', emoji: '🏮', isCorrect: true }
+        ]
+    },
+    5: {
+        text: "Câu 5: Từ nào sau đây có chứa chữ 'đ'?",
+        options: [
+            { word: 'đu quay', img: 'đu quay.png', emoji: '🎡', isCorrect: true },
+            { word: 'mặt trời', emoji: '☀️', isCorrect: false },
+            { word: 'con cá', emoji: '🐟', isCorrect: false }
+        ]
+    },
+    6: {
+        text: "Câu 6: Bé hãy tìm từ có chứa chữ 'd' nhé!",
+        options: [
+            { word: 'con dế', img: 'de.png', emoji: '🦗', isCorrect: true }, 
+            { word: 'quả táo', emoji: '🍎', isCorrect: false },
+            { word: 'chiếc lá', emoji: '🍃', isCorrect: false }
+        ]
+    },
+    7: {
+        text: "Câu 7: Đâu là thẻ từ có chứa chữ 'd'?",
+        options: [
+            { word: 'bông hoa', emoji: '🌸', isCorrect: false },
+            { word: 'con cá', emoji: '🐟', isCorrect: false },
+            { word: 'quả dứa', img: 'dứa.png', emoji: '🍍', isCorrect: true }
+        ]
+    },
+    8: {
+        text: "Câu 8: Từ nào dưới đây có chữ 'd' nhỉ?",
+        options: [
+            { word: 'mặt trời', emoji: '☀️', isCorrect: false },
+            { word: 'con diều', img: 'dieu.png', emoji: '🪁', isCorrect: true },
+            { word: 'chiếc lá', emoji: '🍃', isCorrect: false }
+        ]
+    },
+    9: {
+        text: "Câu 9: Bé hãy chỉ ra từ có chữ 'd' nhé!",
+        options: [
+            { word: 'bông hoa', emoji: '🌸', isCorrect: false },
+            { word: 'dưa hấu', img: 'dưa.png', emoji: '🍉', isCorrect: true },
+            { word: 'quả táo', emoji: '🍎', isCorrect: false }
+        ]
+    },
+    10: {
+        text: "Câu 10: Thẻ từ nào sau đây có chữ 'd'?",
+        options: [
+            { word: 'con cá', emoji: '🐟', isCorrect: false },
+            { word: 'mặt trời', emoji: '☀️', isCorrect: false },
+            { word: 'quả dừa', img: 'dừa.png', emoji: '🥥', isCorrect: true }
+        ]
+    }
+};
+
+function getSvgImg(emoji) {
+    return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='75' font-size='70' text-anchor='middle'>${emoji}</text></svg>`;
+}
+
+function getImgSrc(opt) {
+    if (opt.img) return opt.img;
+    return getSvgImg(opt.emoji);
+}
+
+const WHEEL_SLICES = 10;
+const SLICE_CONFIG = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 
+
+let score = 0;
+let currentRotation = 0;
+let isSpinning = false;
+let playedSlices = []; 
+let soundEnabled = true;
+
+let aiVoice = null;
+function initVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    const viVoices = voices.filter(v => v.lang.includes('vi'));
+    aiVoice = viVoices.find(v => v.name.includes('Google') || v.name.includes('Female')) || viVoices[0];
+}
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = initVoice;
+}
+
+function speak(text) {
+    if (!soundEnabled || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'vi-VN';
+    u.rate = 0.85; 
+    u.pitch = 1.15; 
+    if (aiVoice) u.voice = aiVoice;
+    window.speechSynthesis.speak(u);
+}
+
+function playAudio(audioObj, fallbackText) {
+    if (!soundEnabled) return;
+    audioObj.currentTime = 0;
+    audioObj.play().catch(e => {
+        console.log("Không tải được Audio, chuyển sang giọng AI dự phòng.");
+        if (fallbackText) speak(fallbackText);
+    });
+}
+
+document.body.addEventListener('click', () => {
+    if(soundEnabled && playedSlices.length === 0 && score === 0 && !isSpinning){
+        sndCorrect.play().then(()=>sndCorrect.pause()).catch(e=>{});
+        sndWrong.play().then(()=>sndWrong.pause()).catch(e=>{});
+        sndSpin.play().then(()=>sndSpin.pause()).catch(e=>{});
+        initVoice();
+    }
+}, {once: true});
+
+const spinBtn = document.getElementById('spinBtn');
+const wheelEl = document.getElementById('wheel');
+const instructionEl = document.getElementById('instruction');
+const optionsContainer = document.getElementById('optionsContainer');
+const magnifier = document.getElementById('magnifier');
+const nextBtn = document.getElementById('nextBtn');
+
+spinBtn.addEventListener('click', () => {
+    if (isSpinning) return;
+    
+    let unplayed = SLICE_CONFIG.filter(id => !playedSlices.includes(id));
+    if (unplayed.length === 0) return;
+    
+    if(soundEnabled) {
+        if('speechSynthesis' in window) window.speechSynthesis.resume();
+        sndSpin.currentTime = 0;
+        sndSpin.play().catch(e=>{});
+    }
+
+    isSpinning = true;
+    spinBtn.disabled = true;
+    optionsContainer.innerHTML = ''; 
+    optionsContainer.classList.remove('disabled-events');
+    instructionEl.textContent = 'Vòng quay đang chạy...';
+    instructionEl.style.color = 'var(--text-dark)';
+    magnifier.className = 'magnifier-zone';
+    magnifier.innerHTML = '🔍';
+    nextBtn.style.display = 'none';
+
+    let chosenId = unplayed[Math.floor(Math.random() * unplayed.length)];
+    playedSlices.push(chosenId);
+
+    // Mảng cấu hình vị trí trực quan của các số trên ảnh vòng quay 10.png
+    const VISUAL_ORDER = [4, 5, 6, 7, 8, 9, 10, 1, 2, 3];
+    const visualIndex = VISUAL_ORDER.indexOf(chosenId);
+    
+    const angleStep = 360 / WHEEL_SLICES;
+    
+    // TÍNH TOÁN GÓC QUAY CHUẨN XÁC VÀO TÂM Ô
+    const sliceCenterAngle = (visualIndex * angleStep) + (angleStep / 2);
+    const targetAngleMod = (360 - sliceCenterAngle) % 360;
+    
+    const currentMod = currentRotation % 360;
+    let diff = targetAngleMod - currentMod;
+    if (diff < 0) diff += 360;
+
+    const extraSpins = 5 * 360; 
+    currentRotation += extraSpins + diff;
+    wheelEl.style.transform = `rotate(${currentRotation}deg)`;
+
+    setTimeout(() => {
+        isSpinning = false;
+        spinBtn.disabled = false;
+        sndSpin.pause();
+        loadQuestion(chosenId);
+    }, 4500);
+});
+
+function loadQuestion(id) {
+    let q = QUESTIONS[id];
+    instructionEl.innerHTML = q.text;
+    
+    // XỬ LÝ LẠI VĂN BẢN ĐỂ AI ĐỌC CHUẨN ÂM VỊ MẦM NON
+    let speakText = q.text.replace(/Câu \d+:/, '').trim(); 
+    speakText = speakText.replace(/'d'/g, 'dờ').replace(/'đ'/g, 'đờ');
+    speak(speakText);
+
+    let options = [...q.options];
+    options.sort(() => 0.5 - Math.random());
+
+    optionsContainer.innerHTML = '';
+    options.forEach(opt => {
+        let card = document.createElement('div');
+        card.className = 'option-card';
+        card.innerHTML = `<img src="${getImgSrc(opt)}" alt="${opt.word}" onerror="this.onerror=null; this.src=getSvgImg('${opt.emoji}');"><span>${opt.word}</span>`;
+        
+        card.addEventListener('click', function() {
+            handleAnswer(this, opt);
+        });
+        optionsContainer.appendChild(card);
+    });
+}
+
+function handleAnswer(cardEl, optData) {
+    optionsContainer.classList.add('disabled-events');
+
+    if (optData.isCorrect) {
+        score++;
+        document.getElementById('score').textContent = score;
+        
+        cardEl.classList.add('correct');
+        magnifier.classList.add('success');
+        instructionEl.innerHTML = `ĐÚNG RỒI! GIỎI QUÁ CÔ KHEN CON!`;
+        instructionEl.style.color = 'var(--green)';
+        
+        playAudio(sndCorrect, 'Giỏi quá, cô khen con!');
+        fireConfetti();
+        
+        let rectCard = cardEl.getBoundingClientRect();
+        let rectMag = magnifier.getBoundingClientRect();
+        let flyX = rectMag.left - rectCard.left + (rectMag.width - rectCard.width)/2;
+        let flyY = rectMag.top - rectCard.top + (rectMag.height - rectCard.height)/2;
+        
+        cardEl.style.setProperty('--fly-x', `${flyX}px`);
+        cardEl.style.setProperty('--fly-y', `${flyY}px`);
+        cardEl.style.animation = 'flyToMagnifier 0.7s ease forwards';
+        
+        setTimeout(() => {
+            magnifier.innerHTML = `<img src="${getImgSrc(optData)}" style="width:70%; height:70%; object-fit:contain; animation: bouncePop 0.5s;" onerror="this.src=getSvgImg('${optData.emoji}');">`;
+            showNextBtn();
+        }, 700);
+
+    } else {
+        cardEl.classList.add('wrong');
+        instructionEl.innerHTML = `Ồ SAI RỒI! CON KHÔNG ĐƯỢC ĐIỂM Ở CÂU NÀY.`;
+        instructionEl.style.color = 'var(--red)';
+        playAudio(sndWrong, 'Ồ sai rồi, không sao, con quay tiếp nhé!');
+        showNextBtn();
+    }
+}
+
+function showNextBtn() {
+    let unplayed = SLICE_CONFIG.filter(id => !playedSlices.includes(id));
+    if (unplayed.length === 0) {
+        nextBtn.textContent = 'XEM KẾT QUẢ';
+    } else {
+        nextBtn.textContent = 'Quay Tiếp';
+    }
+    nextBtn.style.display = 'block';
+}
+
+nextBtn.addEventListener('click', () => {
+    let unplayed = SLICE_CONFIG.filter(id => !playedSlices.includes(id));
+    if (unplayed.length === 0) {
+        showFinalScreen();
+    } else {
+        nextBtn.style.display = 'none';
+        instructionEl.innerHTML = `Bé hãy bấm QUAY để nhận câu hỏi nhé!`;
+        instructionEl.style.color = 'var(--text-dark)';
+        magnifier.className = 'magnifier-zone';
+        magnifier.innerHTML = '🔍';
+        optionsContainer.innerHTML = '';
+    }
+});
+
+const overlayMsg = document.getElementById('overlayMsg');
+const msgSub = document.getElementById('msgSub');
+const restartBtn = document.getElementById('restartBtn');
+
+function showFinalScreen() {
+    speak(`Trò chơi kết thúc! Con trả lời đúng ${score} câu. Hoan hô!`);
+    msgSub.textContent = `Con trả lời đúng ${score}/10 câu!`;
+    overlayMsg.style.display = 'flex';
+    restartBtn.style.display = 'block';
+    if(score >= 5) {
+        for(let i=0; i<3; i++) setTimeout(fireConfetti, i*1000);
+    }
+}
+
+restartBtn.addEventListener('click', () => {
+    score = 0;
+    currentRotation = 0;
+    isSpinning = false;
+    playedSlices = [];
+    document.getElementById('score').textContent = score;
+    wheelEl.style.transition = 'none';
+    wheelEl.style.transform = 'rotate(0deg)';
+    void wheelEl.offsetWidth;
+    wheelEl.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)';
+    overlayMsg.style.display = 'none';
+    instructionEl.innerHTML = `Bé hãy bấm QUAY để nhận câu hỏi nhé!`;
+    instructionEl.style.color = 'var(--text-dark)';
+    magnifier.className = 'magnifier-zone';
+    magnifier.innerHTML = '🔍';
+    optionsContainer.innerHTML = '';
+    nextBtn.style.display = 'none';
+});
+
+document.getElementById('soundBtn').addEventListener('click', (e) => {
+    soundEnabled = !soundEnabled;
+    e.target.textContent = soundEnabled ? '🔊 Âm thanh: ĐANG BẬT' : '🔇 Âm thanh: ĐÃ TẮT';
+    if(!soundEnabled) {
+        sndSpin.pause();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+});
+
+function fireConfetti() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#ffcf59', '#a29bfe', '#fd79a8'];
+    for (let i = 0; i < 50; i++) {
+        let conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + 'vw';
+        conf.style.top = -20 + 'px';
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        conf.style.animationDelay = Math.random() * 0.5 + 's';
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 4000);
+    }
+}
+</script>
+</body>
+</html>
